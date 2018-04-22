@@ -13,8 +13,8 @@
         <servlet-class>servlet.FileServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>AlbumServlet</servlet-name>
-        <servlet-class>servlet.AlbumServlet</servlet-class>
+        <servlet-name>ModalServlet</servlet-name>
+        <servlet-class>servlet.ModalServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>UserServlet</servlet-name>
@@ -29,8 +29,8 @@
         <url-pattern>/FileServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>AlbumServlet</servlet-name>
-        <url-pattern>/AlbumServlet</url-pattern>
+        <servlet-name>ModalServlet</servlet-name>
+        <url-pattern>/ModalServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

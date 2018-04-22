@@ -15,7 +15,26 @@ $('div.albumcard').click(function (event) {
     content.empty();
     var title = $(this).attr("title");
     $('.modal-title').html(title);
-    fetch('AlbumServlet?album='+title + '&user=' + readCookie("user"), {
+    fetch('ModalServlet?album='+title + '&user=' + readCookie("user"), {
+        method: 'GET'
+    }).then(function(res)
+    {
+        return res.text();
+    }).then(function(myData)
+    {
+        content.html(myData);
+    });
+    $(".modal-profile").modal({show: true});
+});
+
+
+$('div.trackcard').click(function (event) {
+    event.preventDefault();
+    var content = $('.modal-body');
+    content.empty();
+    var title = $(this).attr("title");
+    $('.modal-title').html(title);
+    fetch('AlbumServlet?track='+title + '&user=' + readCookie("user"), {
         method: 'GET'
     }).then(function(res)
     {

@@ -100,6 +100,13 @@ public class MusicServlet extends HttpServlet {
         User loggedInUser = userQuery.getSingleResult();
         updateDatabase(loggedInUser);
         request.getSession().setAttribute(ApplicationKeys.ALBUMS, loggedInUser.getAlbums());
+        
+        List<Song> songs = new ArrayList<>();
+        loggedInUser.getAlbums().forEach((album) -> {
+            songs.addAll(album.getSongs());
+        });
+        Collections.sort(songs);
+        request.getSession().setAttribute(ApplicationKeys.TRACKS, songs);
         request.getRequestDispatcher(PageEnum.MAIN.getName()).forward(request, response);
     }
 

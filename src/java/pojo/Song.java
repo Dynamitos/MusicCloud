@@ -51,6 +51,11 @@ public class Song implements Serializable, Comparable<Song> {
         this.coverFilename = coverFilename;
     }
 
+    public String getDurationMinutes()
+    {
+        return durationSeconds/60+"";
+    }
+    
     public int getDurationSeconds() {
         return durationSeconds;
     }

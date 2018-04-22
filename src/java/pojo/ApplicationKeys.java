@@ -12,6 +12,7 @@ package pojo;
 public class ApplicationKeys {
     public static final String LOGGEDIN = "loggedinuser";
     public static final String ALBUMS = "albums";
+    public static final String TRACKS = "tracks";
     public static final String BASE_MUSIC_DIR = System.getProperty("user.dir") + "/music/";
     public static final String BASE_IMG_DIR = "/img/";
     public static final String ENTITY_MANAGER = "EM";

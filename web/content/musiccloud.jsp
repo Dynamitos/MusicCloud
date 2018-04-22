@@ -42,6 +42,7 @@
                         <img src="https://png.icons8.com/android/50/000000/musical-notes.png">
                         <strong>Music Cloud</strong>
                     </a>
+                    <span class="nav nav-item right">Login</span>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
@@ -135,14 +136,38 @@
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane fade" id="tracks" role="tabpanel" aria-labelledby="track-tab">>
-                    TODO
+                <div class="tab-pane fade" id="tracks" role="tabpanel" aria-labelledby="track-tab">
+                    <div class="album py-5 bg-light">
+                        <div class="container">
+                            <div class="row">
+                                <c:forEach var="song" items="${tracks}">
+                                    <div class="trackcard col-md-4" title="${song.title}" data-toggle="modal" data-target=".modal-profile-lg">
+                                        <div class="card mb-4 box-shadow">
+                                            <img class="card-img-top" style="height: 225px; width: 100%; display: block;" src="${song.coverFilename}" data-holder-rendered="true">
+                                            <div class="card-body">
+                                                <p class="card-text">${song.title}</p>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <!--<div class="btn-group">
+                                                        <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+                                                        <button type="button" onclick="editAlbum()" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                                    </div>-->
+                                                    <small class="text-muted">${song.durationMinutes} mins</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </c:forEach>
+                            </div>
+
+                        </div>
+
+                    </div>
                 </div>
                 <div class="tab-pane fade" id="artists" role="tabpanel" aria-labelledby="artist-tab">>
                     TODO artists
                 </div>   
             </div>
-           
+
         </main>
 
         <footer class="text-muted">
