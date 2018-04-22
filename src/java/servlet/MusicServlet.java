@@ -64,6 +64,7 @@ public class MusicServlet extends HttpServlet {
 
     @Override
     public void init() {
+        Logger.getLogger("org.jaudiotagger").setLevel(Level.OFF);
         EntityManager em = emf.createEntityManager();
         getServletContext().setAttribute(ApplicationKeys.ENTITY_MANAGER, em);
     }
@@ -100,7 +101,7 @@ public class MusicServlet extends HttpServlet {
         User loggedInUser = userQuery.getSingleResult();
         updateDatabase(loggedInUser);
         request.getSession().setAttribute(ApplicationKeys.ALBUMS, loggedInUser.getAlbums());
-        
+
         List<Song> songs = new ArrayList<>();
         loggedInUser.getAlbums().forEach((album) -> {
             songs.addAll(album.getSongs());
@@ -154,18 +155,19 @@ public class MusicServlet extends HttpServlet {
 
     private void updateDatabase(User currentUser) {
         File basePath = new File(ApplicationKeys.BASE_MUSIC_DIR + currentUser.getId());
+
         File[] files = basePath.listFiles((file, s) -> {
             return s.endsWith(".mp3");
         });
         if (files == null) {
             return;
         }
-        EntityManager em = (EntityManager)getServletContext().getAttribute(ApplicationKeys.ENTITY_MANAGER);
-        
+        EntityManager em = (EntityManager) getServletContext().getAttribute(ApplicationKeys.ENTITY_MANAGER);
+
         EntityTransaction et = em.getTransaction();
         et.begin();
         Map<String, Album> albums = currentUser.getAlbumMap();
-        
+
         for (File f : files) {
             try {
                 AudioFile audioFile = AudioFileIO.read(f);
@@ -196,11 +198,12 @@ public class MusicServlet extends HttpServlet {
                     BufferedImage bimg = artwork.getImage();
                     if (bimg != null) {
                         String coverFilename = ApplicationKeys.BASE_IMG_DIR + currentUser.getId() + "/" + song.getTitle() + ".jpg";
-                        File artworkFile = new File(System.getProperty("user.dir"), coverFilename);
+                        File artworkFile = new File(coverFilename);
                         artworkFile.getParentFile().mkdirs();
+                        System.out.println(artworkFile.getAbsolutePath());
                         ImageIO.write(bimg, "jpg", artworkFile);
-                        song.setCoverFilename("/MusicCloud" + coverFilename);
-                        album.setCoverFilename("/MusicCloud" + coverFilename);
+                        song.setCoverFilename(coverFilename);
+                        album.setCoverFilename(coverFilename);
                     }
                     album.addSong(song);
                     //em.persist(song);
