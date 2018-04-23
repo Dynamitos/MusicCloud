@@ -3,7 +3,6 @@
   <persistence-unit name="MusicCloudPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <non-jta-data-source>java:app/musiccloud</non-jta-data-source>
-    <validation-mode>NONE</validation-mode>
     <properties>
       <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyTenSevenDialect"/>
     </properties>

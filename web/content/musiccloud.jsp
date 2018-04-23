@@ -117,7 +117,7 @@
                                 <c:forEach var="album" items="${albums}">
                                     <div class="albumcard col-md-4" title="${album.name}" data-toggle="modal" data-target=".modal-profile-lg">
                                         <div class="card mb-4 box-shadow">
-                                            <img class="card-img-top" style="height: 225px; width: 100%; display: block;" src="${album.coverFilename}" data-holder-rendered="true">
+                                            <img class="card-img-top" style="height: 225px; width: 100%; display: block;" src="ImageServlet?file=${album.coverFilename}" data-holder-rendered="true">
                                             <div class="card-body">
                                                 <p class="card-text">${album.name}</p>
                                                 <div class="d-flex justify-content-between align-items-center">
