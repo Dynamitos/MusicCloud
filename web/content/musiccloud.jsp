@@ -143,7 +143,7 @@
                                 <c:forEach var="song" items="${tracks}">
                                     <div class="trackcard col-md-4" title="${song.title}" data-toggle="modal" data-target=".modal-profile-lg">
                                         <div class="card mb-4 box-shadow">
-                                            <img class="card-img-top" style="height: 225px; width: 100%; display: block;" src="${song.coverFilename}" data-holder-rendered="true">
+                                            <img class="card-img-top" style="height: 225px; width: 100%; display: block;" src="ImageServlet?file=${song.coverFilename}" data-holder-rendered="true">
                                             <div class="card-body">
                                                 <p class="card-text">${song.title}</p>
                                                 <div class="d-flex justify-content-between align-items-center">

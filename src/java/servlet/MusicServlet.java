@@ -80,25 +80,8 @@ public class MusicServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        Cookie userCookie = new Cookie("user", "0");//TODO: static login for user 0 for testing
-        response.addCookie(userCookie);
-
-        Cookie[] cookies = request.getCookies();
-        int userId = 0;
-        try {
-            for (Cookie c : cookies) {
-                if (c.getName().equals("user")) {
-                    userId = Integer.parseInt(c.getValue());
-                }
-            }
-        } catch (NullPointerException e) {
-            //There were no cookies, so just use default user
-        }
-
-        EntityManager em = (EntityManager) getServletContext().getAttribute(ApplicationKeys.ENTITY_MANAGER);
-        TypedQuery<User> userQuery = em.createNamedQuery("User.loadUserById", User.class);
-        userQuery.setParameter("userId", userId);
-        User loggedInUser = userQuery.getSingleResult();
+        
+        User loggedInUser = DataAccess.getInstance().getLoggedInUser(request);
         updateDatabase(loggedInUser);
         request.getSession().setAttribute(ApplicationKeys.ALBUMS, loggedInUser.getAlbums());
 
@@ -125,12 +108,8 @@ public class MusicServlet extends HttpServlet {
 
         List<Part> fileParts = request.getParts().stream().filter(part -> part.getName().contains("file_")).collect(Collectors.toList()); // Retrieves <input type="file" name="file" multiple="true">
 
-        //TODO: change
-        EntityManager em = (EntityManager) getServletContext().getAttribute(ApplicationKeys.ENTITY_MANAGER);
-        TypedQuery<User> userQuery = em.createNamedQuery("User.loadUserById", User.class);
-        userQuery.setParameter("userId", 0);//TODO: read cookie instead?? or parameter
-        User currentUser = userQuery.getSingleResult();
-
+        User currentUser = DataAccess.getInstance().getLoggedInUser(request);
+        
         for (Part filePart : fileParts) {
             String fileName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // MSIE fix.
             File file = new File(ApplicationKeys.BASE_MUSIC_DIR + currentUser.getId() + "/" + fileName);
@@ -198,6 +177,7 @@ public class MusicServlet extends HttpServlet {
                     BufferedImage bimg = artwork.getImage();
                     if (bimg != null) {
                         String coverFilename = ApplicationKeys.BASE_IMG_DIR + currentUser.getId() + "/" + song.getTitle() + ".jpg";
+                        coverFilename = coverFilename.replace("?", "-").replace("|", "-").replace("<", "-").replace(">", "-").replace("*", "-").replace(":", "-");
                         File artworkFile = new File(coverFilename);
                         artworkFile.getParentFile().mkdirs();
                         System.out.println(artworkFile.getAbsolutePath());
