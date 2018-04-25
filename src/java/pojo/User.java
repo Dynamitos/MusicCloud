@@ -7,6 +7,8 @@ package pojo;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,12 +28,13 @@ import javax.persistence.Transient;
  *
  * @author Dynamitos
  */
-@Entity(name="musicuser")
-@Table(name="musicuser")
+@Entity(name = "musicuser")
+@Table(name = "musicuser")
 @NamedQueries({
     @NamedQuery(name = "User.loadUserById", query = "SELECT u FROM musicuser u WHERE u.id=:userId")
 })
 public class User implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
@@ -41,9 +44,15 @@ public class User implements Serializable {
     private Set<Album> albums;
     @Transient
     private Map<String, Album> albumMap;
+    @Transient
+    private Map<String, Artist> artistMap;
+    @Transient
+    private Set<Artist> artists;
 
     public User() {
         albumMap = new HashMap<>();
+        artistMap = new HashMap<>();
+        artists = new HashSet<>();
     }
 
     public Map<String, Album> getAlbumMap() {
@@ -54,10 +63,23 @@ public class User implements Serializable {
         return albumMap;
     }
 
+    public Map<String, Artist> getArtistMap() {
+        artistMap.clear();
+        for (Iterator<Album> it = albums.iterator(); it.hasNext();) {
+            Album album = it.next();
+            try {
+                album.getSongs().forEach((song) -> {
+                    artistMap.put(song.getArtist().getName(), song.getArtist());
+                });
+            } catch (Exception e) {}
+        }
+        return artistMap;
+    }
+
     public void setAlbumMap(Map<String, Album> albumMap) {
         this.albumMap = albumMap;
     }
-    
+
     public int getId() {
         return id;
     }
@@ -88,14 +110,21 @@ public class User implements Serializable {
 
     public void setAlbums(Set<Album> albums) {
         this.albums = albums;
-        
+
     }
-    
-    public void addAlbum(Album album)
-    {
+
+    public void addAlbum(Album album) {
         albums.add(album);
         albumMap.put(album.getName(), album);
         album.setOwner(this);
     }
-    
+
+    public Set<Artist> getArtists() {
+        artists.clear();
+        artistMap.entrySet().forEach((entry) -> {
+            artists.add(entry.getValue());
+        });
+        return artists;
+    }
+
 }

@@ -48,6 +48,7 @@ import org.jaudiotagger.tag.TagException;
 import org.jaudiotagger.tag.datatype.Artwork;
 import pojo.Album;
 import pojo.ApplicationKeys;
+import pojo.Artist;
 import pojo.PageEnum;
 import pojo.Song;
 import pojo.User;
@@ -91,6 +92,7 @@ public class MusicServlet extends HttpServlet {
         });
         Collections.sort(songs);
         request.getSession().setAttribute(ApplicationKeys.TRACKS, songs);
+        request.getSession().setAttribute(ApplicationKeys.ARTISTS, loggedInUser.getArtists());
         request.getRequestDispatcher(PageEnum.MAIN.getName()).forward(request, response);
     }
 
@@ -146,6 +148,7 @@ public class MusicServlet extends HttpServlet {
         EntityTransaction et = em.getTransaction();
         et.begin();
         Map<String, Album> albums = currentUser.getAlbumMap();
+        Map<String, Artist> artistMap = currentUser.getArtistMap();
 
         for (File f : files) {
             try {
@@ -168,6 +171,7 @@ public class MusicServlet extends HttpServlet {
 
                 String songTitle = tag.getFirst(FieldKey.TITLE);
                 Song song = songs.get(songTitle);
+                
                 if (song == null) {
                     song = new Song();
                     song.setTitle(songTitle);
@@ -178,15 +182,30 @@ public class MusicServlet extends HttpServlet {
                     if (bimg != null) {
                         String coverFilename = ApplicationKeys.BASE_IMG_DIR + currentUser.getId() + "/" + song.getTitle() + ".jpg";
                         coverFilename = coverFilename.replace("?", "-").replace("|", "-").replace("<", "-").replace(">", "-").replace("*", "-").replace(":", "-");
+                        
                         File artworkFile = new File(coverFilename);
                         artworkFile.getParentFile().mkdirs();
+                        
                         System.out.println(artworkFile.getAbsolutePath());
                         ImageIO.write(bimg, "jpg", artworkFile);
+                        
                         song.setCoverFilename(coverFilename);
                         album.setCoverFilename(coverFilename);
                     }
                     album.addSong(song);
                     //em.persist(song);
+                }
+                String artistName = tag.getFirst(FieldKey.ARTIST);
+                Artist artist = artistMap.get(artistName);
+                
+                if(artist == null)
+                {
+                    artist = new Artist();
+                    artist.setName(artistName);
+                    album.setArtist(artist);
+                    
+                    em.persist(artist);
+                    artistMap.put(artistName, artist);
                 }
             } catch (CannotReadException | IOException | TagException | ReadOnlyFileException | InvalidAudioFrameException ex) {
                 Logger.getLogger(MusicServlet.class.getName()).log(Level.SEVERE, null, ex);
